@@ -1,3 +1,25 @@
+// Force center first card immediately at page load
+function forceInitialCentering() {
+    const cards = document.querySelectorAll('.card');
+    const firstCard = cards[0];
+    const container = document.querySelector('.cards-container');
+    
+    // Explicitly position the first card in the center
+    setTimeout(function() {
+        const cardWidth = firstCard.offsetWidth;
+        const containerWidth = container.offsetWidth;
+        const scrollLeft = firstCard.offsetLeft - (containerWidth - cardWidth) / 2;
+        
+        // Force immediate scroll without animation
+        container.scrollLeft = scrollLeft;
+        
+        // Apply again to ensure it works
+        setTimeout(function() {
+            container.scrollLeft = scrollLeft;
+        }, 100);
+    }, 0);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const cards = document.querySelectorAll('.card');
     const steps = document.querySelectorAll('.step');
@@ -13,6 +35,18 @@ document.addEventListener('DOMContentLoaded', function() {
             card.classList.add('visible');
         }, 150 * index);
     });
+    
+    // Force center the first card
+    forceInitialCentering();
+    
+    // Function to center a card
+    function centerCard(card) {
+        const container = document.querySelector('.cards-container');
+        const cardWidth = card.offsetWidth;
+        const containerWidth = container.offsetWidth;
+        const scrollLeft = card.offsetLeft - (containerWidth - cardWidth) / 2;
+        container.scrollLeft = scrollLeft;
+    }
     
     // Update progress and active states
     function updateProgress(step) {
@@ -41,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => {
                     card.classList.add('active');
                 }, 50);
-                card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                centerCard(card);
             } else {
                 card.classList.remove('active');
             }
@@ -55,14 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Click handlers for steps
     steps.forEach((step) => {
         step.addEventListener('click', function() {
-            const step = parseInt(this.dataset.step);
-            updateProgress(step);
-        });
-    });
-    
-    // Click handlers for cards
-    cards.forEach((card) => {
-        card.addEventListener('click', function() {
             const step = parseInt(this.dataset.step);
             updateProgress(step);
         });
@@ -89,4 +115,12 @@ document.addEventListener('DOMContentLoaded', function() {
             updateProgress(currentStep + 1);
         }
     });
-}); 
+    
+    // Re-center on resize
+    window.addEventListener('resize', () => {
+        centerCard(cards[currentStep - 1]);
+    });
+});
+
+// Ensure centering after all resources loaded
+window.addEventListener('load', forceInitialCentering); 

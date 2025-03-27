@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFC Fruits Trading - Avocado Traceability (With Warnings)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Force zoom to 75% on page load
+        window.onload = function() {
+            // Set zoom on HTML element (root) instead of body
+            document.documentElement.style.zoom = "75%";
+        }
+    </script>
+    <style>
+        /* Additional styles for warnings */
+        .warning-badge {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Non-active card warning badges */
+        .card:not(.active) .stage-badge .warning-badge {
+            background: rgba(220, 38, 38, 0.1);
+            color: #991b1b;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        .warning-item {
+            background: linear-gradient(to right, rgba(220, 38, 38, 0.08), rgba(220, 38, 38, 0.03));
+            border-left: 3px solid #dc2626;
+            padding: 12px 16px;
+            margin-top: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .warning-item strong {
+            color: #991b1b;
+            font-weight: 600;
+        }
+        
+        .warning-item i {
+            color: #dc2626;
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        
+        .warning-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            background: linear-gradient(to right, rgba(220, 38, 38, 0), rgba(220, 38, 38, 0.1));
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .step-warning::after {
+            content: '!';
+            position: absolute;
+            top: -6px;
+            right: 48px;
+            background-color: #dc2626;
+            color: white;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        
+        /* Update completed step styles to use ::before instead of ::after */
+        .step[data-step="1"]::before,
+        .step[data-step="2"]::before {
+            content: '✓';
+            position: absolute;
+            top: -6px;
+            right: 48px;
+            background-color: var(--primary);
+            color: white;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid white;
+            z-index: 3;
+        }
+
+        /* Warning icon positioning */
+        .step-warning::after {
+            content: '!';
+            position: absolute;
+            top: -4px;
+            right: 48px;
+            background-color: #dc2626;
+            color: white;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+
+        /* When step 1 or 2 has a warning, adjust checkmark position */
+        .step[data-step="1"].step-warning::before,
+        .step[data-step="2"].step-warning::before {
+            right: 48px;
+        }
+
+        /* Remove the old completed styles that were class-based */
+        .step.completed::after {
+            content: none;
+        }
+        
+        .step.completed.step-warning::after {
+            content: none;
+        }
+        
+        .step.completed.step-warning::before {
+            content: none;
+        }
+        
+        /* Disabled step styles */
+        .step.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            position: relative;
+            pointer-events: none; /* This blocks all interactions */
+        }
+        
+        .step.disabled::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            z-index: 2;
+        }
+        
+        .blocked-message {
+            background-color: rgba(220, 38, 38, 0.1);
+            border-left: 3px solid #dc2626;
+            padding: 12px 16px;
+            margin-top: 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #991b1b;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .blocked-message i {
+            color: #dc2626;
+            margin-right: 8px;
+        }
+        
+        /* Disabled card styles */
+        .card.disabled {
+            opacity: 0.6;
+            filter: grayscale(70%);
+            pointer-events: none;
+            position: relative;
+            transform: none !important;
+            box-shadow: none !important;
+            border: 1px dashed rgba(203, 213, 225, 0.6) !important;
+        }
+        
+        .card.disabled::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(241, 245, 249, 0.3),
+                rgba(241, 245, 249, 0.3) 10px,
+                rgba(226, 232, 240, 0.3) 10px,
+                rgba(226, 232, 240, 0.3) 20px
+            );
+            z-index: 5;
+            border-radius: 16px;
+        }
+        
+        .card.disabled .stage-badge {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .card.disabled .card-header {
+            opacity: 0.7;
+        }
+        
+        /* Resolution actions section styling */
+        .resolution-section {
+            margin-bottom: 24px;
+            background: linear-gradient(to right, rgba(45, 106, 79, 0.08), rgba(45, 106, 79, 0.02));
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 3px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .resolution-section .section-title {
+            color: var(--primary-dark);
+            border-bottom-color: rgba(45, 106, 79, 0.2);
+        }
+        
+        .resolution-section .section-title i {
+            color: var(--primary);
+        }
+        
+        .resolution-section .list-item {
+            border-bottom-color: rgba(45, 106, 79, 0.15);
+        }
+        
+        .resolution-section .list-item::before {
+            content: "→";
+            background: none;
+            color: var(--primary);
+            margin-top: 0;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .resolution-progress {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .resolution-progress-bar {
+            height: 8px;
+            width: 100%;
+            background: rgba(116, 198, 157, 0.2);
+            border-radius: 4px;
+            margin: 0 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .resolution-progress-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 60%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 4px;
+        }
+        
+        /* Blocked notification styling */
+        .blocked-notification {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+            padding: 12px 16px;
+            margin-top: 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #b91c1c;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .blocked-notification i {
+            color: #ef4444;
+            margin-right: 8px;
+        }
+        
+        .highlight-animation {
+            animation: highlight 1s ease-in-out;
+        }
+        
+        @keyframes highlight {
+            0% { box-shadow: 0 0 0 rgba(239, 68, 68, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
+            100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0.3); }
+        }
+        
+        @keyframes slideIn {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <section class="timeline">
+            <div class="timeline-nav">
+                <div class="steps">
+                    <div class="progress-track">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    
+                    <div class="step active" data-step="1">
+                        <div class="step-icon"><i class="fas fa-seedling"></i></div>
+                        <div class="step-label">Farm Inspection</div>
+                    </div>
+                    
+                    <div class="step" data-step="2">
+                        <div class="step-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                        <div class="step-label">Harvest</div>
+                    </div>
+                    
+                    <div class="step step-warning" data-step="3">
+                        <div class="step-icon"><i class="fas fa-box"></i></div>
+                        <div class="step-label">Pre-Shipment</div>
+                    </div>
+                    
+                    <div class="step disabled" data-step="4">
+                        <div class="step-icon"><i class="fas fa-ship"></i></div>
+                        <div class="step-label">Transit</div>
+                    </div>
+                    
+                    <div class="step disabled" data-step="5">
+                        <div class="step-icon"><i class="fas fa-anchor"></i></div>
+                        <div class="step-label">Port Arrival</div>
+                    </div>
+                    
+                    <div class="step disabled" data-step="6">
+                        <div class="step-icon"><i class="fas fa-warehouse"></i></div>
+                        <div class="step-label">Warehouse</div>
+                    </div>
+                    
+                    <div class="step disabled" data-step="7">
+                        <div class="step-icon"><i class="fas fa-store"></i></div>
+                        <div class="step-label">Distribution</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cards-container">
+                <!-- Card 1 -->
+                <div class="card active" data-step="1">
+                    <div class="stage-badge">Origin Phase</div>
+                    <div class="card-header">
+                        <div class="header-icon"><i class="fas fa-seedling"></i></div>
+                        <div class="header-content">
+                            <h3 class="card-title">Farm Inspection</h3>
+                            <div class="location"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</div>
+                        </div>
+                        <div class="map-preview" data-location="Nairobi, Kenya" style="background-image: url('https://a.tile.openstreetmap.org/10/600/423.png')"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="section">
+                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
+                            <div class="list">
+                                <div class="list-item">Initial inspection of avocado farms <strong>25 acres</strong> inspected</div>
+                                <div class="list-item">Verification of PUC Code <strong>KE-215</strong>, Lot <strong>#AVK-2203</strong></div>
+                                <div class="list-item">Soil pH level: <strong>6.5-7.2</strong> optimal range</div>
+                                <div class="list-item">Batch tagging with <strong>98%</strong> traceability compliance</div>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
+                            <div class="list checks">
+                                <div class="list-item">Dry Matter: <strong>23.4%</strong> (Target: >23%)</div>
+                                <div class="list-item">Fruit Pressure: <strong>8.2 kg/cm²</strong> (Standard: 8-10)</div>
+                                <div class="list-item">Visual Defect Rate: <strong>< 2%</strong> of sampled fruit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="card" data-step="2">
+                    <div class="stage-badge">Harvesting</div>
+                    <div class="card-header">
+                        <div class="header-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                        <div class="header-content">
+                            <h3 class="card-title">Harvest & Post-Harvest</h3>
+                            <div class="location"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</div>
+                        </div>
+                        <div class="map-preview" data-location="Nairobi, Kenya" style="background-image: url('https://a.tile.openstreetmap.org/10/600/423.png')"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="section">
+                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
+                            <div class="list">
+                                <div class="list-item">Handpicking & Sorting: <strong>4.8 tons</strong> harvested</div>
+                                <div class="list-item">Cleaning & Pre-cooling to <strong>12°C</strong> for freshness</div>
+                                <div class="list-item">Packaging: <strong>1,200 units</strong> in 4KG boxes</div>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
+                            <div class="list checks">
+                                <div class="list-item">Size Distribution: <strong>85% Grade A</strong> (170-210g per fruit)</div>
+                                <div class="list-item">Moisture Content: <strong>72%</strong> (Target: 70-75%)</div>
+                                <div class="list-item">Defect Rejection Rate: <strong>3.2%</strong> of total harvest</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 - Modified with warnings -->
+                <div class="card" data-step="3">
+                    <div class="stage-badge">Pre-Export <span class="warning-badge"><i class="fas fa-exclamation-triangle"></i></span></div>
+                    <div class="card-header">
+                        <div class="header-icon"><i class="fas fa-box"></i></div>
+                        <div class="header-content">
+                            <h3 class="card-title">Pre-Shipment Inspection</h3>
+                            <div class="location"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</div>
+                        </div>
+                        <div class="map-preview" data-location="Nairobi, Kenya" style="background-image: url('https://a.tile.openstreetmap.org/10/600/423.png')"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="section">
+                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
+                            <div class="list">
+                                <div class="list-item">Quality inspection: <strong>100%</strong> of pallets checked</div>
+                                <div class="list-item">Packaging verified: <strong>1,178 boxes</strong> labeled <span class="warning-badge"><i class="fas fa-exclamation-triangle"></i></span></div>
+                                <div class="list-item">QR Code reliability: <strong>97.3%</strong> scan success rate <span class="warning-badge"><i class="fas fa-exclamation-triangle"></i></span></div>
+                            </div>
+                            
+                            <div class="warning-item">
+                                <i class="fas fa-exclamation-triangle"></i> <strong>Alert:</strong> 22 boxes require labeling correction.
+                            </div>
+                        </div>
+                        <div class="section">
+                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
+                            <div class="list checks">
+                                <div class="list-item">Dry Matter: <strong>24.1%</strong> (increased from initial check)</div>
+                                <div class="list-item">Ripeness Index: <strong>2.5</strong> on 1-5 scale <span class="warning-badge"><i class="fas fa-exclamation-triangle"></i></span></div>
+                                <div class="list-item">Packaging Integrity: <strong>98.5%</strong> compliance rate</div>
+                            </div>
+                            
+                            <div class="warning-item">
+                                <i class="fas fa-exclamation-triangle"></i> <strong>Alert:</strong> Ripeness above target range. Implementing cold chain protocol.
+                            </div>
+                        </div>
+                        
+                        <div class="resolution-section">
+                            <h4 class="section-title"><i class="fas fa-tools"></i> Resolution Actions</h4>
+                            <div class="list">
+                                <div class="list-item">Additional QC staff assigned</div>
+                                <div class="list-item">Cooling temperature reduced to <strong>4°C</strong></div>
+                                <div class="list-item">Priority shipping arranged</div>
+                            </div>
+                            <div class="resolution-progress">
+                                <span>Resolution Progress:</span>
+                                <div class="resolution-progress-bar"></div>
+                                <span>60%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="nav-controls">
+            <button class="nav-btn" id="prev-btn" disabled><i class="fas fa-chevron-left"></i></button>
+            <button class="nav-btn" id="next-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </main>
+
+    <!-- Map Modal -->
+    <div class="map-modal" id="map-modal">
+        <div class="map-container">
+            <button class="map-close" id="map-close"><i class="fas fa-times"></i></button>
+            <iframe class="map-iframe" id="map-iframe" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Force center first card immediately at page load
+        function forceInitialCentering() {
+            const cards = document.querySelectorAll('.card');
+            const firstCard = cards[0];
+            const container = document.querySelector('.cards-container');
+            
+            // Explicitly position the first card in the center
+            setTimeout(function() {
+                const cardWidth = firstCard.offsetWidth;
+                const containerWidth = container.offsetWidth;
+                const scrollLeft = firstCard.offsetLeft - (containerWidth - cardWidth) / 2;
+                
+                // Force immediate scroll without animation
+                container.scrollLeft = scrollLeft;
+                
+                // Apply again to ensure it works
+                setTimeout(function() {
+                    container.scrollLeft = scrollLeft;
+                }, 100);
+            }, 0);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            const steps = document.querySelectorAll('.step');
+            const progressBar = document.getElementById('progress-bar');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            let currentStep = 1;
+            let lastActiveStep = 3; // Last non-disabled step
+
+            // Function to center a card
+            function centerCard(card) {
+                const container = document.querySelector('.cards-container');
+                const cardWidth = card.offsetWidth;
+                const containerWidth = container.offsetWidth;
+                const scrollLeft = card.offsetLeft - (containerWidth - cardWidth) / 2;
+                container.scrollLeft = scrollLeft;
+            }
+
+            // Add initial animations
+            cards.forEach((card, index) => {
+                card.style.setProperty('--i', index);
+                setTimeout(() => {
+                    card.classList.add('visible');
+                }, 150 * index);
+            });
+
+            // Force center first card
+            forceInitialCentering();
+
+            function updateProgressBar(step) {
+                // Update progress bar for all steps
+                const progress = ((step - 1) / 6) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            function handleStepChange(newStep) {
+                // Allow progress bar to follow all steps but limit navigation to active steps
+                if (newStep < 1 || newStep > lastActiveStep) return;
+                
+                // Update current step
+                currentStep = newStep;
+
+                // Update progress bar
+                updateProgressBar(currentStep);
+
+                // Update steps - only change active state, preserve warning class
+                steps.forEach(step => {
+                    const stepNum = parseInt(step.dataset.step);
+                    step.classList.remove('active');
+                    
+                    if (stepNum === currentStep) {
+                        step.classList.add('active');
+                    }
+                });
+
+                // Update cards and center the active one
+                cards.forEach(card => {
+                    card.classList.remove('active');
+                    if (parseInt(card.dataset.step) === currentStep) {
+                        card.classList.add('active');
+                        centerCard(card);
+                    }
+                });
+
+                // Update navigation buttons - disable after step 3
+                prevBtn.disabled = currentStep === 1;
+                nextBtn.disabled = currentStep === lastActiveStep;
+            }
+
+            // Event Listeners - only steps, no card navigation
+            steps.forEach(step => {
+                step.addEventListener('click', () => {
+                    const stepNum = parseInt(step.dataset.step);
+                    // Only allow clicking up to step 3
+                    if (stepNum <= lastActiveStep) {
+                        handleStepChange(stepNum);
+                    }
+                });
+            });
+
+            prevBtn.addEventListener('click', () => handleStepChange(currentStep - 1));
+            nextBtn.addEventListener('click', () => handleStepChange(currentStep + 1));
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') handleStepChange(currentStep - 1);
+                if (e.key === 'ArrowRight') handleStepChange(currentStep + 1);
+            });
+
+            // Initialize
+            handleStepChange(1);
+
+            // Re-center on resize
+            window.addEventListener('resize', () => {
+                centerCard(cards[currentStep - 1]);
+            });
+        });
+
+        // Ensure centering after all resources loaded
+        window.addEventListener('load', forceInitialCentering);
+
+        // Map Modal Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapPreviews = document.querySelectorAll('.map-preview');
+            const mapModal = document.getElementById('map-modal');
+            const mapIframe = document.getElementById('map-iframe');
+            const mapClose = document.getElementById('map-close');
+            
+            mapPreviews.forEach(preview => {
+                preview.addEventListener('click', function() {
+                    const location = this.getAttribute('data-location');
+                    mapModal.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling
+                    
+                    // Define precise coordinates for each location
+                    let lat, lon, zoom;
+                    
+                    if (location === "Nairobi, Kenya") {
+                        lat = -1.286389;
+                        lon = 36.817223;
+                        zoom = 12;
+                    } else if (location === "Dubai") {
+                        lat = 25.276987;
+                        lon = 55.296249;
+                        zoom = 12;
+                    } else if (location === "TFC Warehouse, Dubai") {
+                        lat = 25.230035;
+                        lon = 55.275170;
+                        zoom = 14;
+                    } else if (location === "Kenya to Dubai") {
+                        // For route, show wider view
+                        lat = 12.0;
+                        lon = 45.0;
+                        zoom = 4;
+                    } else {
+                        // Default
+                        lat = 0;
+                        lon = 0;
+                        zoom = 2;
+                    }
+                    
+                    // Create OpenStreetMap URL with marker
+                    mapIframe.src = `https://www.openstreetmap.org/export/embed.html?bbox=${lon-1}%2C${lat-1}%2C${lon+1}%2C${lat+1}&layer=mapnik&marker=${lat}%2C${lon}&zoom=${zoom}`;
+                });
+            });
+            
+            mapClose.addEventListener('click', function() {
+                mapModal.classList.remove('active');
+                document.body.style.overflow = ''; // Restore scrolling
+                setTimeout(() => {
+                    mapIframe.src = '';
+                }, 300);
+            });
+            
+            // Close modal when clicking outside the map
+            mapModal.addEventListener('click', function(e) {
+                if (e.target === mapModal) {
+                    mapClose.click();
+                }
+            });
+            
+            // Close modal with escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mapModal.classList.contains('active')) {
+                    mapClose.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

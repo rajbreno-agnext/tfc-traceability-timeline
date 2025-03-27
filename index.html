@@ -3,284 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TFC Fruits Trading - Avocado Traceability</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Avocado Traceability</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2d6a4f;
+            --primary-dark: #1b4332;
+            --secondary: #74c69d;
+            --accent: #d9b08c;
+            --background: #f8f9fa;
+            --surface: #ffffff;
+            --text: #212529;
+            --text-light: #495057;
+            --border: #dee2e6;
+            
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
+            background-image: 
+                radial-gradient(at 40% 20%, rgba(45, 106, 79, 0.05) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(116, 198, 157, 0.05) 0px, transparent 50%),
+                radial-gradient(at 5% 50%, rgba(217, 176, 140, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            margin: 10px;
+            min-width: 250px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 4px 12px rgba(45, 106, 79, 0.2);
+        }
+        
+        .btn-error {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn i {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <main class="container">
-        <section class="timeline">
-            <div class="timeline-nav">
-                <div class="steps">
-                    <div class="progress-track">
-                        <div class="progress-bar" id="progress-bar"></div>
-                    </div>
-                    
-                    <div class="step active" data-step="1">
-                        <div class="step-icon"><i class="fas fa-seedling"></i></div>
-                        <div class="step-label">Farm Inspection</div>
-                    </div>
-                    
-                    <div class="step" data-step="2">
-                        <div class="step-icon"><i class="fas fa-hand-holding-heart"></i></div>
-                        <div class="step-label">Harvest</div>
-                    </div>
-                    
-                    <div class="step" data-step="3">
-                        <div class="step-icon"><i class="fas fa-box"></i></div>
-                        <div class="step-label">Pre-Shipment</div>
-                    </div>
-                    
-                    <div class="step" data-step="4">
-                        <div class="step-icon"><i class="fas fa-ship"></i></div>
-                        <div class="step-label">Transit</div>
-                    </div>
-                    
-                    <div class="step" data-step="5">
-                        <div class="step-icon"><i class="fas fa-anchor"></i></div>
-                        <div class="step-label">Port Arrival</div>
-                    </div>
-                    
-                    <div class="step" data-step="6">
-                        <div class="step-icon"><i class="fas fa-warehouse"></i></div>
-                        <div class="step-label">Warehouse</div>
-                    </div>
-                    
-                    <div class="step" data-step="7">
-                        <div class="step-icon"><i class="fas fa-store"></i></div>
-                        <div class="step-label">Distribution</div>
-                    </div>
-                </div>
-            </div>
+    <div class="container">
+        <div class="buttons">
+            <a href="no-error.html" class="btn btn-primary">
+                <i class="fas fa-check-circle"></i> No Error Example
+            </a>
             
-            <div class="cards-container">
-                <!-- Card 1 -->
-                <div class="card active" data-step="1">
-                    <div class="stage-badge">Origin Phase</div>
-                    <div class="card-header">
-                        <div class="header-icon"><i class="fas fa-seedling"></i></div>
-                        <div class="header-content">
-                            <h3 class="card-title">Farm Inspection</h3>
-                            <div class="location"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
-                            <div class="list">
-                                <div class="list-item">Initial inspection of avocado farms <strong>25 acres</strong> inspected</div>
-                                <div class="list-item">Verification of PUC Code <strong>KE-215</strong>, Lot <strong>#AVK-2203</strong></div>
-                                <div class="list-item">Soil pH level: <strong>6.5-7.2</strong> optimal range</div>
-                                <div class="list-item">Batch tagging with <strong>98%</strong> traceability compliance</div>
-                            </div>
-                        </div>
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
-                            <div class="list checks">
-                                <div class="list-item">Dry Matter: <strong>23.4%</strong> (Target: >23%)</div>
-                                <div class="list-item">Fruit Pressure: <strong>8.2 kg/cm²</strong> (Standard: 8-10)</div>
-                                <div class="list-item">Visual Defect Rate: <strong>< 2%</strong> of sampled fruit</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="card" data-step="2">
-                    <div class="stage-badge">Harvesting</div>
-                    <div class="card-header">
-                        <div class="header-icon"><i class="fas fa-hand-holding-heart"></i></div>
-                        <div class="header-content">
-                            <h3 class="card-title">Harvest & Post-Harvest</h3>
-                            <div class="location"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
-                            <div class="list">
-                                <div class="list-item">Handpicking & Sorting: <strong>4.8 tons</strong> harvested</div>
-                                <div class="list-item">Cleaning & Pre-cooling to <strong>12°C</strong> for freshness</div>
-                                <div class="list-item">Packaging: <strong>1,200 units</strong> in 4KG boxes</div>
-                            </div>
-                        </div>
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
-                            <div class="list checks">
-                                <div class="list-item">Size Distribution: <strong>85% Grade A</strong> (170-210g per fruit)</div>
-                                <div class="list-item">Moisture Content: <strong>72%</strong> (Target: 70-75%)</div>
-                                <div class="list-item">Defect Rejection Rate: <strong>3.2%</strong> of total harvest</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="card" data-step="3">
-                    <div class="stage-badge">Pre-Export</div>
-                    <div class="card-header">
-                        <div class="header-icon"><i class="fas fa-box"></i></div>
-                        <div class="header-content">
-                            <h3 class="card-title">Pre-Shipment Inspection</h3>
-                            <div class="location"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
-                            <div class="list">
-                                <div class="list-item">Quality inspection: <strong>100%</strong> of pallets checked</div>
-                                <div class="list-item">Packaging verified: <strong>1,200 boxes</strong> labeled</div>
-                                <div class="list-item">QR Code reliability: <strong>99.8%</strong> scan success rate</div>
-                            </div>
-                        </div>
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
-                            <div class="list checks">
-                                <div class="list-item">Dry Matter: <strong>24.1%</strong> (increased from initial check)</div>
-                                <div class="list-item">Ripeness Index: <strong>2.1</strong> on 1-5 scale (ideal for shipping)</div>
-                                <div class="list-item">Packaging Integrity: <strong>100%</strong> compliance rate</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="card" data-step="4">
-                    <div class="stage-badge">Transit Phase</div>
-                    <div class="card-header">
-                        <div class="header-icon"><i class="fas fa-ship"></i></div>
-                        <div class="header-content">
-                            <h3 class="card-title">Export & Transit</h3>
-                            <div class="location"><i class="fas fa-ship"></i> Kenya → Dubai</div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
-                            <div class="list">
-                                <div class="list-item">Shipment loaded: <strong>48 pallets</strong> on 2/3/2025</div>
-                                <div class="list-item">Sea freight transit: <strong>8 days</strong> journey time</div>
-                                <div class="list-item">Tracking frequency: <strong>hourly</strong> data updates</div>
-                                <div class="list-item">Container: <strong>MSCU7542198</strong>, AWB: <strong>023-84742545</strong></div>
-                            </div>
-                        </div>
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
-                            <div class="list checks">
-                                <div class="list-item">Temperature Range: <strong>4.8-6.2°C</strong> (Target: 4-7°C)</div>
-                                <div class="list-item">Humidity Levels: <strong>85-92%</strong> throughout transit</div>
-                                <div class="list-item">Shock Events: <strong>2 minor</strong> incidents recorded</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="card" data-step="5">
-                    <div class="stage-badge">Destination Arrival</div>
-                    <div class="card-header">
-                        <div class="header-icon"><i class="fas fa-anchor"></i></div>
-                        <div class="header-content">
-                            <h3 class="card-title">Port Arrival & Customs</h3>
-                            <div class="location"><i class="fas fa-map-marker-alt"></i> Dubai</div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
-                            <div class="list">
-                                <div class="list-item">Arrival: <strong>On-time</strong> on 2/11/2025</div>
-                                <div class="list-item">Port: Dubai, Berth <strong>#7</strong></div>
-                                <div class="list-item">Customs processing: <strong>4.5 hours</strong></div>
-                                <div class="list-item">Cold-chain transfer: <strong>< 30 min</strong></div>
-                            </div>
-                        </div>
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
-                            <div class="list checks">
-                                <div class="list-item">Arrival Temperature: <strong>5.3°C</strong> (within specification)</div>
-                                <div class="list-item">Visual Inspection: <strong>98.5%</strong> acceptable appearance</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 6 -->
-                <div class="card" data-step="6">
-                    <div class="stage-badge">Processing</div>
-                    <div class="card-header">
-                        <div class="header-icon"><i class="fas fa-warehouse"></i></div>
-                        <div class="header-content">
-                            <h3 class="card-title">Warehouse Inspection</h3>
-                            <div class="location"><i class="fas fa-warehouse"></i> TFC Warehouse, Dubai</div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
-                            <div class="list">
-                                <div class="list-item">Warehouse intake: <strong>48 pallets</strong> on 2/12/2025</div>
-                                <div class="list-item">Storage conditions: <strong>6°C, 90%</strong> humidity</div>
-                                <div class="list-item">Quality sample size: <strong>15%</strong> of shipment</div>
-                            </div>
-                        </div>
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
-                            <div class="list checks">
-                                <div class="list-item">Dry Matter: <strong>24.5%</strong> (within 0.5% of pre-shipment)</div>
-                                <div class="list-item">Visual Quality Score: <strong>4.6/5.0</strong> after transit</div>
-                                <div class="list-item">Net Weight Verification: <strong>99.7%</strong> accuracy</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 7 -->
-                <div class="card" data-step="7">
-                    <div class="stage-badge">Final Delivery</div>
-                    <div class="card-header">
-                        <div class="header-icon"><i class="fas fa-store"></i></div>
-                        <div class="header-content">
-                            <h3 class="card-title">Final Distribution</h3>
-                            <div class="location"><i class="fas fa-store"></i> Dubai Retailers</div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-chart-line"></i> Summary</h4>
-                            <div class="list">
-                                <div class="list-item">Distribution: <strong>65%</strong> supermarkets, <strong>35%</strong> restaurants</div>
-                                <div class="list-item">Freshness protocol: <strong>100%</strong> FIFO adherence</div>
-                                <div class="list-item">Consumer engagement: <strong>312</strong> QR code scans</div>
-                            </div>
-                        </div>
-                        <div class="section">
-                            <h4 class="section-title"><i class="fas fa-check-circle"></i> Quality Checks</h4>
-                            <div class="list checks">
-                                <div class="list-item">Final Ripeness Score: <strong>3.2/5.0</strong> (ready for retail)</div>
-                                <div class="list-item">Cold-Chain Maintenance: <strong>Zero breaks</strong> in temperature control</div>
-                                <div class="list-item">Retailer Acceptance Rate: <strong>99.2%</strong> of delivered product</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <div class="nav-controls">
-            <button class="nav-btn" id="prev-btn" disabled><i class="fas fa-chevron-left"></i></button>
-            <button class="nav-btn" id="next-btn"><i class="fas fa-chevron-right"></i></button>
+            <a href="error.html" class="btn btn-error">
+                <i class="fas fa-exclamation-triangle"></i> Error Example
+            </a>
         </div>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p></p>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
+    </div>
 </body>
-</html> 
+</html>
