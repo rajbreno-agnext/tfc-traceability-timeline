@@ -169,7 +169,7 @@ main.container {
     background: var(--surface);
     border-radius: 16px;
     min-width: 360px;
-    max-width: 560px;
+    max-width: 600px;
     flex-shrink: 0;
     scroll-snap-align: center;
     transition: all var(--transition-normal);
