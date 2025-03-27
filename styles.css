@@ -172,7 +172,7 @@ main.container {
     max-width: 600px;
     flex-shrink: 0;
     scroll-snap-align: center;
-    transition: all var(--transition-normal);
+    transition: all var(--transition-normal), border-color 0.2s ease;
     opacity: 0;
     transform: translateY(20px);
     overflow: visible; /* Changed to visible for badge */
@@ -189,7 +189,34 @@ main.container {
 
 .card.active {
     box-shadow: var(--shadow-lg);
-    border-color: var(--primary);
+    border: 3px solid var(--primary);
+    transform: translateY(-4px);
+    position: relative;
+}
+
+.card.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 16px;
+    box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.3);
+    pointer-events: none;
+    animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .card-header {
@@ -217,6 +244,12 @@ main.container {
     box-shadow: var(--shadow-md);
     z-index: 10;
     white-space: nowrap;
+    transition: all var(--transition-normal);
+}
+
+.card.active .stage-badge {
+    transform: translateX(-50%) translateY(-4px);
+    box-shadow: var(--shadow-lg);
 }
 
 .header-icon {
